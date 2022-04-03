@@ -11,3 +11,9 @@ Plugin to convert drawing's objects to IFC (with GeometryGym .NET library)
 - Surfaces;
 ### Internal drawing parameters
 - Property sets;
+
+## Using (en)
+There are two variants: download repository and compiling that or downloading latest release as ZIP archive (library with GeometryGym dependencies). Load library to Civil3D via command NETLOAD (file "civil2ifc.dll"). Plugin contains one command: **\_ifc_export** (export to IFC current drawing's objects). Result file will be saved near that DWG.
+
+## Использование (ru)
+2 варианта: загрузка репозитория и сборка или скачивание скомпилированной версии последнего релиза (архив с плагином) и последующая загрузка в Civil3D библиотеки "civil2ifc.dll" через команду NETLOAD). Используйте команду **\_ifc_export** для экспорта объектов Civil3D из текущего чертежа. Файл сохранитя рядом с текущим файлом.
