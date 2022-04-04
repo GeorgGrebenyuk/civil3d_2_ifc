@@ -25,6 +25,7 @@ namespace civil2ifc
         public static DatabaseIfc ifc_db;
         public static IfcProject ifc_project;
         public static IfcSite ifc_site;
+        public static IfcLocalPlacement base_placement;
 
 
         public static Document ac_doc;
@@ -46,11 +47,17 @@ namespace civil2ifc
             ac_db = ac_doc.Database;
             civil_doc = cas.CivilApplication.ActiveDocument;
 
-            ifc_db = new DatabaseIfc(ModelView.Ifc4X1NotAssigned);
+            ifc_db = new DatabaseIfc(ModelView.Ifc2x3NotAssigned); //ModelView.Ifc4X1NotAssigned
             ifc_site = new IfcSite(ifc_db, "civil_site");
             
-            ifc_project = new IfcProject(ifc_site, "IfcProject", IfcUnitAssignment.Length.Millimetre) { };
+            ifc_project = new IfcProject(ifc_site, "IfcProject", IfcUnitAssignment.Length.Metre) { };
 
+            //Base placement for position other elements
+            IfcCartesianPoint p0 = new IfcCartesianPoint(ifc_db, 0d, 0d, 0d);
+            IfcDirection d1 = new IfcDirection(ifc_db, 0d, 0d, 1d);
+            IfcDirection d2 = new IfcDirection(ifc_db, 1d, 0d, 0d);
+            IfcAxis2Placement3D p2 = new IfcAxis2Placement3D(p0, d1, d2);
+            base_placement = new IfcLocalPlacement(p2);
 
             //Start parsing file
             //Surfaces
