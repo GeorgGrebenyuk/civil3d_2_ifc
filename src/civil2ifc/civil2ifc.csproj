@@ -41,6 +41,9 @@
       <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\acdbmgd.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="acdbmgdbrep">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\acdbmgdbrep.dll</HintPath>
+    </Reference>
     <Reference Include="acmgd">
       <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\acmgd.dll</HintPath>
       <Private>False</Private>
@@ -80,9 +83,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="civil_objects\PipeNetwork.cs" />
-    <Compile Include="civil_objects\PropSet.cs" />
+    <Compile Include="civil_properties\SetMaterial.cs" />
+    <Compile Include="civil_properties\PropSet.cs" />
     <Compile Include="civil_objects\Surface.cs" />
     <Compile Include="ifc\BaseStructures.cs" />
+    <Compile Include="ifc\GetSolid.cs" />
     <Compile Include="ifc\IfcProps.cs" />
     <Compile Include="Start.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
