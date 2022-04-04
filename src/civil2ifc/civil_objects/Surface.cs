@@ -31,16 +31,20 @@ namespace civil2ifc.civil_objects
                     {
                         cds.TinSurface tin_surf = acTrans.GetObject(id, OpenMode.ForRead) as cds.TinSurface;
                         cds.TinSurfaceTriangleCollection trs = tin_surf.GetTriangles(false);
+                        
                         List<IfcFace> surf_faces = new List<IfcFace>();
                         foreach (cds.TinSurfaceTriangle tr in trs)
                         {
-                            surf_faces.Add(ifc.BaseStructures.ifc_face(tr));
+                            surf_faces.Add(new ifc.BaseStructures(tr).face);
                         }
                         IfcFaceBasedSurfaceModel ifc_surf_model = new IfcFaceBasedSurfaceModel(new IfcConnectedFaceSet(surf_faces));
+                        IfcStyledItem object_style = new IfcStyledItem(ifc_surf_model, new civil_properties.SetMaterial(tin_surf.Color).style_assignm);
                         IfcShapeRepresentation surface_repr = new IfcShapeRepresentation(ifc_surf_model);
 
                         IfcSite new_site = new IfcSite(ifc_site, tin_surf.Name);
+                        
                         new_site.Representation = new IfcProductDefinitionShape(surface_repr);
+                        
 
                         PropSet props = new PropSet(id, new_site); //new_site.GlobalId
                         cds.TerrainSurfaceProperties surf_terr_props = tin_surf.GetTerrainProperties();
