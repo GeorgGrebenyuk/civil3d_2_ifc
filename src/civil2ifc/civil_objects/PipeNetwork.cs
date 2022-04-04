@@ -18,6 +18,8 @@ namespace civil2ifc.civil_objects
     public class PipeNetwork
     {
         private static List<cds.Pipe> pipes;
+        private static List<cds.Structure> structures;
+
         private static IfcObject parent_pipe_network;
         public static void Create(ObjectIdCollection ids)
         {
@@ -29,45 +31,58 @@ namespace civil2ifc.civil_objects
                     {
                         cds.Network pipes_network = acTrans.GetObject(id, OpenMode.ForRead) as cds.Network;
                         string pipe_network_name = pipes_network.Name;
-                        IfcSystem pipe_network_system = new IfcSystem(ifc_db, pipe_network_name);
+                        IfcSystem pipe_network_system = new IfcSystem(ifc_site, pipe_network_name);
+                        
                         parent_pipe_network = pipe_network_system;
                         
 
                         //Workings with pipes and structures
-                        //cds.SectionPipeNetwork tin_surf = acTrans.GetObject(id, OpenMode.ForRead) as cds.SectionPipeNetwork;
                         ObjectIdCollection pipes_ids = pipes_network.GetPipeIds();
                         pipes = new List<cds.Pipe>();
                         foreach (ObjectId pipe_id in pipes_ids)
                         {
                             pipes.Add(acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Pipe);
                         }
+                        WorksWithPipes();
+
                         ObjectIdCollection structures_ids = pipes_network.GetStructureIds();
+                        structures = new List<cds.Structure>();
+                        foreach (ObjectId pipe_id in structures_ids)
+                        {
+                            structures.Add(acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Structure);
+                        }
+                        WorksWithStructures();
                     }
                     acTrans.Commit();
                 }
             }
         }
-        private void WorksWithPipes()
+        private static void WorksWithPipes()
         {
             foreach (cds.Pipe one_pipe in pipes)
             {
                 //Geometry
-                IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_pipe.StartPoint.X,
-                    one_pipe.StartPoint.Y, one_pipe.StartPoint.Z);
-                //IfcDirection pipe_axis = new IfcDirection(ifc_db, one_pipe.EndPoint.X - one_pipe.StartPoint.X,
-                //    one_pipe.EndPoint.Y - one_pipe.StartPoint.Y, one_pipe.EndPoint.Z - one_pipe.StartPoint.Z);
-                IfcDirection axis_start = new IfcDirection(ifc_db, 0d, 0d, 0d);
-                IfcDirection axis_end = new IfcDirection(ifc_db, one_pipe.EndPoint.X - one_pipe.StartPoint.X,
-                    one_pipe.EndPoint.Y - one_pipe.StartPoint.Y, one_pipe.EndPoint.Z - one_pipe.StartPoint.Z);
+                IfcFaceBasedSurfaceModel pipe_solid = new ifc.GetSolid(one_pipe.Solid3dBody).surf_row;
 
+                //IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_pipe.StartPoint.X,
+                //    one_pipe.StartPoint.Y, one_pipe.StartPoint.Z);
+                //IfcCartesianPoint pipe_end = new IfcCartesianPoint(ifc_db, one_pipe.EndPoint.X,
+                //    one_pipe.EndPoint.Y, one_pipe.EndPoint.Z);
+                //IfcPolyline line_pipe = new IfcPolyline(pipe_start, pipe_end);
+                //IfcCompositeCurveSegment curve_pipe = new IfcCompositeCurveSegment(IfcTransitionCode.CONTINUOUS, true, line_pipe);
+                //IfcCompositeCurve curve_composit_pipe = new IfcCompositeCurve(curve_pipe);
+                //IfcSweptDiskSolid solid_pipe = new IfcSweptDiskSolid(curve_composit_pipe, 
+                //    one_pipe.InnerDiameterOrWidth / 2, one_pipe.InnerDiameterOrWidth / 2 - one_pipe.WallThickness);
 
-                IfcAxis2Placement3D axis_place = new IfcAxis2Placement3D(pipe_start, axis_start, axis_end);
-                IfcToroidalSurface pipe_geometry = new IfcToroidalSurface(axis_place, one_pipe.Radius, one_pipe.Radius - one_pipe.WallThickness);
-                IfcShapeRepresentation pipe_geometry2 = new IfcShapeRepresentation(pipe_geometry);
-                IfcProductDefinitionShape pipe_geometry3 = new IfcProductDefinitionShape(pipe_geometry2);
-                IfcBuildingElementProxy pipe_geometry4 = new IfcBuildingElementProxy(parent_pipe_network, ifc_site.ObjectPlacement, pipe_geometry3);
+                IfcStyledItem object_style = new IfcStyledItem(pipe_solid, new civil_properties.SetMaterial(one_pipe.Color).style_assignm);
+                IfcShapeRepresentation solid_shape_pipe = new IfcShapeRepresentation(pipe_solid);
+                IfcProductDefinitionShape solid_shape2_pipe = new IfcProductDefinitionShape(solid_shape_pipe);
+                
+                IfcBuildingElementProxy proxy_solid = new IfcBuildingElementProxy(ifc_site, base_placement, solid_shape2_pipe);
+                proxy_solid.Representation = solid_shape2_pipe;
+                
 
-                PropSet props = new PropSet(one_pipe.Id, pipe_geometry4); //new_site.GlobalId
+                new PropSet(one_pipe.Id, proxy_solid); //new_site.GlobalId
 
                 Dictionary<string, object> pipes_properties = new Dictionary<string, object>
                 {
@@ -79,23 +94,58 @@ namespace civil2ifc.civil_objects
                 };
                 Dictionary<string, Dictionary<string, object>> internal_surf_props = new Dictionary<string, Dictionary<string, object>>();
                 internal_surf_props.Add("Pipes properties", pipes_properties);
-                new ifc.IfcProps(internal_surf_props, pipe_geometry4);
-
-
-                //IfcDistributionSystem ifc_pipe1 = new IfcDistributionSystem(pipe_geometry3, one_pipe.Name, IfcDistributionSystemEnum.FUEL) ;
-                //IfcPipeSegment ifc_pipe2 = new IfcPipeSegment(parent_pipe_network, ifc_site.ObjectPlacement, )
+                new ifc.IfcProps(internal_surf_props, proxy_solid);
             }
         }
-        private static Dictionary<string, object> get_terrarian_properties(cds.TerrainSurfaceProperties surf_terr_props)
+        private static void WorksWithStructures()
         {
-            return new Dictionary<string, object>
+            foreach (cds.Structure one_structure in structures)
             {
-                {"MaximumGradeOrSlope",surf_terr_props.MaximumGradeOrSlope },
-                {"MeanGradeOrSlope",surf_terr_props.MeanGradeOrSlope},
-                {"MinimumGradeOrSlope",surf_terr_props.MinimumGradeOrSlope },
-                {"SurfaceArea2D",surf_terr_props.SurfaceArea2D },
-                {"SurfaceArea3D",surf_terr_props.SurfaceArea2D }
-            };
+                //Geometry
+                IfcFaceBasedSurfaceModel structure_solid = new ifc.GetSolid(one_structure.Solid3dBody).surf_row;
+
+                //IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_structure.StartPoint.X,
+                //    one_structure.StartPoint.Y, one_structure.StartPoint.Z);
+                //IfcCartesianPoint pipe_end = new IfcCartesianPoint(ifc_db, one_structure.EndPoint.X,
+                //    one_structure.EndPoint.Y, one_structure.EndPoint.Z);
+                //IfcPolyline line_pipe = new IfcPolyline(pipe_start, pipe_end);
+                //IfcCompositeCurveSegment curve_pipe = new IfcCompositeCurveSegment(IfcTransitionCode.CONTINUOUS, true, line_pipe);
+                //IfcCompositeCurve curve_composit_pipe = new IfcCompositeCurve(curve_pipe);
+                //IfcSweptDiskSolid solid_pipe = new IfcSweptDiskSolid(curve_composit_pipe,
+                //    one_structure.InnerDiameterOrWidth / 2, one_structure.InnerDiameterOrWidth / 2 - one_structure.WallThickness);
+                IfcStyledItem object_style = new IfcStyledItem(structure_solid, new civil_properties.SetMaterial(one_structure.Color).style_assignm);
+                IfcShapeRepresentation solid_shape_pipe = new IfcShapeRepresentation(structure_solid);
+                IfcProductDefinitionShape solid_shape2_pipe = new IfcProductDefinitionShape(solid_shape_pipe);
+
+                IfcBuildingElementProxy proxy_solid = new IfcBuildingElementProxy(ifc_site, base_placement, solid_shape2_pipe);
+                proxy_solid.Representation = solid_shape2_pipe;
+
+
+                new PropSet(one_structure.Id, proxy_solid); //new_site.GlobalId
+
+                Dictionary<string, object> pipes_properties = new Dictionary<string, object>
+                {
+                    {"Description",one_structure.Description },
+                    //{"DiameterOrWidth",one_structure.DiameterOrWidth },
+                    //{"DisplayName",one_structure.DisplayName },
+                    //{"FloorThickness",one_structure.FloorThickness },
+                    //{"FrameDiameter",one_structure.FrameDiameter },
+                    //{"FrameHeight",one_structure.FrameHeight },
+                    //{"Height",one_structure.Height },
+                    //{"InnerDiameterOrWidth",one_structure.InnerDiameterOrWidth },
+                    //{"InnerLength ",one_structure.InnerLength },
+                    {"PartFamilyId",one_structure.PartFamilyId },
+                    {"PartFamilyName",one_structure.PartFamilyName},
+                    //{"PartSizeName",one_structure.PartSizeName },
+                    //{"PartSubType",one_structure.PartSubType },
+                    //{"PartType",one_structure.PartType },
+                    //{"SumpDepth",one_structure.SumpDepth },
+                    //{"SumpElevation",one_structure.SumpElevation }
+                };
+                Dictionary<string, Dictionary<string, object>> internal_surf_props = new Dictionary<string, Dictionary<string, object>>();
+                internal_surf_props.Add("Pipes properties", pipes_properties);
+                new ifc.IfcProps(internal_surf_props, proxy_solid);
+            }
         }
     }
 }
