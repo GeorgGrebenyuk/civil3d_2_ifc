@@ -65,12 +65,37 @@ namespace civil2ifc.civil_objects
                 IfcToroidalSurface pipe_geometry = new IfcToroidalSurface(axis_place, one_pipe.Radius, one_pipe.Radius - one_pipe.WallThickness);
                 IfcShapeRepresentation pipe_geometry2 = new IfcShapeRepresentation(pipe_geometry);
                 IfcProductDefinitionShape pipe_geometry3 = new IfcProductDefinitionShape(pipe_geometry2);
+                IfcBuildingElementProxy pipe_geometry4 = new IfcBuildingElementProxy(parent_pipe_network, ifc_site.ObjectPlacement, pipe_geometry3);
 
-                
+                PropSet props = new PropSet(one_pipe.Id, pipe_geometry4); //new_site.GlobalId
 
-                IfcDistributionSystem ifc_pipe1 = new IfcDistributionSystem(pipe_geometry3, one_pipe.Name, IfcDistributionSystemEnum.FUEL) ;
-                IfcPipeSegment ifc_pipe2 = new IfcPipeSegment(parent_pipe_network, ifc_site.ObjectPlacement, )
+                Dictionary<string, object> pipes_properties = new Dictionary<string, object>
+                {
+                    {"Radius",one_pipe.Radius },
+                    {"WallThickness",one_pipe.WallThickness },
+                    {"Length3D",one_pipe.Length3D },
+                    {"PartFamilyName",one_pipe.PartFamilyName },
+                    {"PartSizeName",one_pipe.PartSizeName }
+                };
+                Dictionary<string, Dictionary<string, object>> internal_surf_props = new Dictionary<string, Dictionary<string, object>>();
+                internal_surf_props.Add("Pipes properties", pipes_properties);
+                new ifc.IfcProps(internal_surf_props, pipe_geometry4);
+
+
+                //IfcDistributionSystem ifc_pipe1 = new IfcDistributionSystem(pipe_geometry3, one_pipe.Name, IfcDistributionSystemEnum.FUEL) ;
+                //IfcPipeSegment ifc_pipe2 = new IfcPipeSegment(parent_pipe_network, ifc_site.ObjectPlacement, )
             }
+        }
+        private static Dictionary<string, object> get_terrarian_properties(cds.TerrainSurfaceProperties surf_terr_props)
+        {
+            return new Dictionary<string, object>
+            {
+                {"MaximumGradeOrSlope",surf_terr_props.MaximumGradeOrSlope },
+                {"MeanGradeOrSlope",surf_terr_props.MeanGradeOrSlope},
+                {"MinimumGradeOrSlope",surf_terr_props.MinimumGradeOrSlope },
+                {"SurfaceArea2D",surf_terr_props.SurfaceArea2D },
+                {"SurfaceArea3D",surf_terr_props.SurfaceArea2D }
+            };
         }
     }
 }
