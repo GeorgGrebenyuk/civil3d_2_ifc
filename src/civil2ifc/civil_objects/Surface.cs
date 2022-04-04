@@ -22,7 +22,7 @@ namespace civil2ifc.civil_objects
 
         public static void Create(ObjectIdCollection ids)
         {
-            IfcStructuralAnalysisModel analysisModel = new IfcStructuralAnalysisModel(ifc_site, "All surfaces", IfcAnalysisModelTypeEnum.LOADING_3D);
+            
             using (DocumentLock acDocLock = ac_doc.LockDocument())
             {
                 using (Transaction acTrans = ac_db.TransactionManager.StartTransaction())
