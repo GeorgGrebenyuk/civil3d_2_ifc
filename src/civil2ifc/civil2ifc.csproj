@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="civil_objects\PipeNetwork.cs" />
     <Compile Include="civil_objects\PropSet.cs" />
     <Compile Include="civil_objects\Surface.cs" />
     <Compile Include="ifc\BaseStructures.cs" />
