@@ -75,7 +75,6 @@ namespace civil2ifc.civil_objects
                             }
                         }
                         props2name.Add(prop_group_name, prop_group);
-                        int y = 9;
                     }
                     acTrans.Commit();
                 }
