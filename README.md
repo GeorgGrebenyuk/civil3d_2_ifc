@@ -6,7 +6,7 @@ Plugin to convert drawing's objects to IFC (with GeometryGym .NET library)
 
 ## Supported IFC formats and objects
 ### Ifc version
-- IFC4x1;
+- IFC2x3;
 ### Civil3d objects
 - Surfaces;
 ### Internal drawing parameters
