@@ -1,0 +1,123 @@
+using Autodesk.AutoCAD.BoundaryRepresentation;
+[CommandMethod("SOL2POLYFACEMESH")]
+static public void PolyfaceMeshFromSolid()
+{
+    Document doc =
+    Application.DocumentManager.MdiActiveDocument;
+    Database db = doc.Database;
+    Editor ed = doc.Editor;
+    PromptEntityOptions peo =
+    new PromptEntityOptions("\nВыберите твердое тело: ");
+    peo.SetRejectMessage("\nТолько твердое тело! ");
+    peo.AddAllowedClass(typeof(Solid3d), true);
+    PromptEntityResult per = ed.GetEntity(peo);
+    if (per.Status != PromptStatus.OK)
+        return;
+    Transaction tr = db.TransactionManager.StartTransaction();
+    using (tr)
+    {
+        BlockTable bt = (BlockTable)tr.GetObject
+            (
+                db.BlockTableId,
+                OpenMode.ForRead,
+                false
+            );
+        BlockTableRecord btr = (BlockTableRecord)
+                tr.GetObject(
+                                bt[BlockTableRecord.ModelSpace],
+                                OpenMode.ForWrite, false
+                            );
+        Solid3d sol = tr.GetObject(
+                                    per.ObjectId,
+                                    OpenMode.ForRead
+                                  ) as Solid3d;
+        // Вычислим приблизительный размер нашего тела
+        double length = sol.GeometricExtents.MinPoint.GetVectorTo
+                        (sol.GeometricExtents.MaxPoint).Length;
+        using (Brep brp = new Brep(sol))
+        {
+            // Создадим и установим параметры элемента управления сетью
+            using (Mesh2dControl mc = new Mesh2dControl())
+            {
+                // Эти установки могут показаться завышенными, но они
+                // приводят к ~500 граням для сферы (во всяком случае,
+                // в моих тестах).
+                mc.MaxNodeSpacing = length / 10000;
+                mc.MaxSubdivisions = 100000000;
+                // Создадим элемент фильтра сети
+                using (Mesh2dFilter mf = new Mesh2dFilter())
+                {
+                    // Используем его для отображения настроек управления
+                    // в Brep
+                    mf.Insert(brp, mc);
+                    // Генерируем сеть при помощи фильтра
+                    PolyFaceMesh pfm = new PolyFaceMesh();
+                    pfm.SetDatabaseDefaults();
+                    pfm.ColorIndex = 2;
+                    btr.AppendEntity(pfm);
+                    short v0 = 0;
+                    short v1 = 0;
+                    short v2 = 0;
+                    short v3 = 0;
+                    short v = 0;
+                    Dictionary<Point3d, short> vertexLookup
+                            = new Dictionary<Point3d, short>();
+                    using (Mesh2d m = new Mesh2d(mf))
+                    {
+                        // Получаем отдельные грани
+                        // из данных сети
+                        foreach (Element2d e in m.Element2ds)
+                        {
+                            foreach (Node n in e.Nodes)
+                            {
+                                if (! vertexLookup.ContainsKey(n.Point))
+                                {
+                                    PolyFaceMeshVertex pfmVertex
+                                        = new PolyFaceMeshVertex(n.Point);
+                                    pfm.AppendVertex(pfmVertex);
+                                    vertexLookup.Add(n.Point, ++v);
+                                    tr.AddNewlyCreatedDBObject
+                                            (pfmVertex, true);
+                                }
+                                n.Dispose();
+                            }
+                        }
+                        foreach (Element2d e in m.Element2ds)
+                        {
+                            Point3dCollection pts
+                                    = new Point3dCollection();
+                            foreach (Node n in e.Nodes)
+                            {
+                                pts.Add(n.Point);
+                                n.Dispose();
+                            }
+                            e.Dispose();
+                            v0 = 0;
+                            if (vertexLookup.ContainsKey(pts[0]))
+                                v0 = vertexLookup[pts[0]];
+                            v1 = 0;
+                            if (vertexLookup.ContainsKey(pts[1]))
+                                v1 = vertexLookup[pts[1]];
+                            v2 = 0;
+                            if (vertexLookup.ContainsKey(pts[2]))
+                                v2 = vertexLookup[pts[2]];
+                            v3 = 0;
+                            if (pts.Count == 4)
+                            {
+                                if (vertexLookup.ContainsKey(pts[3]))
+                                    v3 = vertexLookup[pts[3]];
+                            }
+                            FaceRecord fr
+                               = new FaceRecord(v0, v1, v2, v3);
+                            pfm.AppendFaceRecord(fr);
+                            tr.AddNewlyCreatedDBObject(fr, true);
+                        }
+                    }
+                    tr.AddNewlyCreatedDBObject(pfm, true);
+                    vertexLookup.Clear();
+                }
+            }
+        }
+        tr.Commit();
+    }
+}

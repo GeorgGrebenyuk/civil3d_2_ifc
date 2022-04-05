@@ -1,0 +1,49 @@
+using (Brep brep = new Brep(input_solid))
+            {                
+                for (int face_counter = 0; face_counter < brep.Faces.Count(); face_counter++)
+                {
+                    Autodesk.AutoCAD.BoundaryRepresentation.Face face = brep.Faces.ElementAt(face_counter);
+                    for (int loop_counter = 0; loop_counter < face.Loops.Count(); loop_counter++)
+                    {
+                        BoundaryLoop lp = face.Loops.ElementAt(loop_counter);
+                        List<int> coord_indexes = new List<int>();
+
+                        for (int point_counter = 0; point_counter < lp.Vertices.Count(); point_counter++)
+                        {
+                            Autodesk.AutoCAD.BoundaryRepresentation.Vertex one_vertex = lp.Vertices.ElementAt(point_counter);
+                            if (!face_points.Contains(one_vertex.Point))
+                            {
+                                face_points.Add(one_vertex.Point);
+                                points_temp.Add(new Tuple<double, double, double>(one_vertex.Point.X, one_vertex.Point.Y, one_vertex.Point.Z));
+                                coord_indexes.Add(face_counter + loop_counter + point_counter);
+                            }
+                            else
+                            {
+                                int point_last = face_points.FindIndex(a => a == one_vertex.Point);
+                                coord_indexes.Add(point_last);
+                            }
+                        }
+                        //for (int edge_counter = 0; edge_counter < lp.Edges.Count(); edge_counter++)
+                        //{
+                        //    Edge edg = lp.Edges.ElementAt(edge_counter);
+                        //    if (!face_points.Contains(edg.Vertex1.Point)) 
+                        //    {
+                        //        face_points.Add(edg.Vertex1.Point);
+                        //        addpoint( edg.Vertex1);
+                        //    }
+                        //    if (!face_points.Contains(edg.Vertex2.Point)) 
+                        //    {
+                        //        face_points.Add(edg.Vertex2.Point);
+                        //        addpoint(edg.Vertex2);
+                        //    }
+
+                        //    void addpoint (Autodesk.AutoCAD.BoundaryRepresentation.Vertex p)
+                        //    {
+                        //        points_temp.Add(new Tuple<double, double, double>(p.Point.X, p.Point.Y, p.Point.Z));
+                        //        coord_indexes.Add(face_counter + loop_counter + edge_counter);
+                        //    } 
+                        //}
+                        faces_indexed.Add(new IfcIndexedPolygonalFace(ifc_db, coord_indexes));
+                    }
+                }
+            }
