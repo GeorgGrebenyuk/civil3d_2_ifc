@@ -17,8 +17,8 @@ namespace civil2ifc.civil_objects
 {
     public class PipeNetwork
     {
-        private static List<cds.Pipe> pipes;
-        private static List<cds.Structure> structures;
+        private static Dictionary<cds.Pipe, ObjectId> pipes;
+        private static Dictionary<cds.Structure, ObjectId> structures;
 
         private static IfcObject parent_pipe_network;
         public static void Create(ObjectIdCollection ids)
@@ -27,6 +27,15 @@ namespace civil2ifc.civil_objects
             {
                 using (Transaction acTrans = ac_db.TransactionManager.StartTransaction())
                 {
+                    BlockTable acBlkTbl;
+                    acBlkTbl = acTrans.GetObject(ac_db.BlockTableId,
+                                                       OpenMode.ForRead) as BlockTable;
+                    // Open the Block table record Model space for write
+                    BlockTableRecord acBlkTblRec;
+                    acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
+                                                          OpenMode.ForWrite) as BlockTableRecord;
+
+
                     foreach (ObjectId id in ids)
                     {
                         cds.Network pipes_network = acTrans.GetObject(id, OpenMode.ForRead) as cds.Network;
@@ -38,31 +47,54 @@ namespace civil2ifc.civil_objects
 
                         //Workings with pipes and structures
                         ObjectIdCollection pipes_ids = pipes_network.GetPipeIds();
-                        pipes = new List<cds.Pipe>();
+                        pipes = new Dictionary<cds.Pipe, ObjectId>();
                         foreach (ObjectId pipe_id in pipes_ids)
                         {
-                            pipes.Add(acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Pipe);
+                            cds.Pipe new_p = acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Pipe;
+                            
+                            ObjectId solid_id;
+                            SaveSolid(new_p.Solid3dBody, out solid_id);
+                            pipes.Add(new_p, solid_id);
                         }
-                        WorksWithPipes();
+                        
 
                         ObjectIdCollection structures_ids = pipes_network.GetStructureIds();
-                        structures = new List<cds.Structure>();
+                        structures = new Dictionary<cds.Structure, ObjectId>();
                         foreach (ObjectId pipe_id in structures_ids)
                         {
-                            structures.Add(acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Structure);
+                            cds.Structure new_s = acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Structure;
+                            
+                            ObjectId solid_id;
+                            SaveSolid(new_s.Solid3dBody, out solid_id);
+                            structures.Add(new_s, solid_id);
                         }
-                        WorksWithStructures();
+                        
                     }
+                    void SaveSolid (Solid3d s, out ObjectId solid_id)
+                    {
+                        acBlkTblRec.AppendEntity(s);
+                        acTrans.AddNewlyCreatedDBObject(s, true);
+                        solid_id = s.ObjectId;
+                    }
+
+
+
+
+
                     acTrans.Commit();
                 }
             }
+            WorksWithPipes();
+            WorksWithStructures();
         }
         private static void WorksWithPipes()
         {
-            foreach (cds.Pipe one_pipe in pipes)
+            foreach (KeyValuePair< cds.Pipe, ObjectId> one_pipe_record in pipes)
             {
                 //Geometry
-                IfcFaceBasedSurfaceModel pipe_solid = new ifc.GetSolid(one_pipe.Solid3dBody).surf_row;
+                cds.Pipe one_pipe = one_pipe_record.Key;
+                IfcFaceBasedSurfaceModel pipe_solid = new ifc.GetSolid(one_pipe_record.Value).surf_row;
+
 
                 //IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_pipe.StartPoint.X,
                 //    one_pipe.StartPoint.Y, one_pipe.StartPoint.Z);
@@ -99,10 +131,11 @@ namespace civil2ifc.civil_objects
         }
         private static void WorksWithStructures()
         {
-            foreach (cds.Structure one_structure in structures)
+            foreach (KeyValuePair<cds.Structure, ObjectId> one_structure_record in structures)
             {
+                cds.Structure one_structure = one_structure_record.Key;
                 //Geometry
-                IfcFaceBasedSurfaceModel structure_solid = new ifc.GetSolid(one_structure.Solid3dBody).surf_row;
+                IfcFaceBasedSurfaceModel structure_solid = new ifc.GetSolid(one_structure_record.Value).surf_row;
 
                 //IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_structure.StartPoint.X,
                 //    one_structure.StartPoint.Y, one_structure.StartPoint.Z);
