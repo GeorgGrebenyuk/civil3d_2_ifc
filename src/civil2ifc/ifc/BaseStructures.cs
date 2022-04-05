@@ -13,6 +13,7 @@ using cas = Autodesk.Civil.ApplicationServices;
 using cds = Autodesk.Civil.DatabaseServices;
 using static civil2ifc.Start;
 using Autodesk.AutoCAD.Geometry;
+using stl = QuantumConcepts.Formats.StereoLithography;
 
 namespace civil2ifc.ifc
 {
@@ -49,6 +50,22 @@ namespace civil2ifc.ifc
             IfcPolyLoop ifc_loop = new IfcPolyLoop(ifc_3points);
             IfcFaceOuterBound ifc_bound = new IfcFaceOuterBound(ifc_loop, true);
             this.face = new IfcFace(ifc_bound);
+        }
+        public BaseStructures(stl.Facet stl_one_facet)
+        {
+            IfcCartesianPoint[] ifc_3points = new IfcCartesianPoint[stl_one_facet.Vertices.Count()];
+            for (int i1 = 0; i1 < stl_one_facet.Vertices.Count; i1++)
+            {
+                ifc_3points[i1] = new IfcCartesianPoint(ifc_db, 
+                    stl_one_facet.Vertices[i1].X, stl_one_facet.Vertices[i1].Y, stl_one_facet.Vertices[i1].Z);
+            }
+            IfcPolyLoop ifc_loop = new IfcPolyLoop(ifc_3points);
+            IfcFaceOuterBound ifc_bound = new IfcFaceOuterBound(ifc_loop, true);
+            this.face = new IfcFace(ifc_bound);
+            foreach (stl.Vertex one_point in stl_one_facet.Vertices)
+            {
+
+            }
         }
 
     }
