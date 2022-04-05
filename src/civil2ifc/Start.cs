@@ -61,12 +61,13 @@ namespace civil2ifc
 
             //Start parsing file
             //Surfaces
-            civil_objects.Surface.Create(civil_doc.GetSurfaceIds());
+            //civil_objects.Surface.Create(civil_doc.GetSurfaceIds());
             civil_objects.PipeNetwork.Create(civil_doc.GetPipeNetworkIds());
 
             string path_to_ifc_file = ac_db.Filename.Replace(Path.GetExtension(ac_db.Filename), $"{Guid.NewGuid()}.ifc");
             
             ifc_db.WriteFile(path_to_ifc_file);
+            //ac_db.Save();
         }
     }
 }

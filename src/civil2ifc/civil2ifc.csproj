@@ -42,7 +42,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="acdbmgdbrep">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2022\acdbmgdbrep.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\acdbmgdbrep.dll</HintPath>
     </Reference>
     <Reference Include="acmgd">
       <HintPath>C:\Program Files\Autodesk\AutoCAD 2022\acmgd.dll</HintPath>
@@ -71,6 +71,9 @@
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.6.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="QuantumConcepts.Formats.StereoLithography">
+      <HintPath>..\..\libs\stl\QuantumConcepts.Formats.StereoLithography.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
