@@ -264,3 +264,6 @@ DynamoScripts/GPUCache/data_1
 DynamoScripts/GPUCache/data_2
 DynamoScripts/GPUCache/data_3
 DynamoScripts/GPUCache/index
+*.dwl2
+*.dwl
+*.ifc
