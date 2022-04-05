@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>QuantumConcepts.Formats.StereoLithography</name>
+    </assembly>
+    <members>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Shift(System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Facet},System.Single,System.Single,System.Single)">
+            <summary>Shifts the vertices within the <paramref name="facets"/> enumerable by <paramref name="x"/>, <paramref name="y"/> and <paramref name="z"/>.</summary>
+            <param name="facets">The vertices within these facets will be shifted.</param>
+            <param name="x">The amount to shift the vertices along the X axis.</param>
+            <param name="y">The amount to shift the vertices along the Y axis.</param>
+            <param name="z">The amount to shift the vertices along the Z axis.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Shift(System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Facet},QuantumConcepts.Formats.StereoLithography.Vertex)">
+            <summary>Shifts the vertices within the <paramref name="facets"/> enumerable by the X, Y and Z values in the <paramref name="shift"/> parameter.</summary>
+            <param name="facets">The vertices to be shifted.</param>
+            <param name="shift">The amount to shift each vertex.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Shift(System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Vertex},System.Single,System.Single,System.Single)">
+            <summary>Shifts the <paramref name="vertices"/> enumerable by <paramref name="x"/>, <paramref name="y"/> and <paramref name="z"/>.</summary>
+            <param name="vertices">The vertices to be shifted.</param>
+            <param name="x">The amount to shift the vertices along the X axis.</param>
+            <param name="y">The amount to shift the vertices along the Y axis.</param>
+            <param name="z">The amount to shift the vertices along the Z axis.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Shift(System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Vertex},QuantumConcepts.Formats.StereoLithography.Vertex)">
+            <summary>Shifts the <paramref name="vertices"/> enumerable by the X, Y and Z values in the <paramref name="shift"/> parameter.</summary>
+            <param name="vertices">The vertices to be shifted.</param>
+            <param name="shift">The amount to shift each vertex.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Invert(System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Facet})">
+            <summary>Inverts the <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> within the <paramref name="facets"/> enumerable.</summary>
+            <param name="facets">The facets to invert.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>Iterates the provided enumerable, applying the provided action to each element.</summary>
+            <param name="items">The items upon which to apply the action.</param>
+            <param name="action">The action to apply to each item.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.All``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``0,System.Boolean})">
+            <summary>Iterates the provided enumerable, applying the provided action to each element.</summary>
+            <param name="items">The items upon which to apply the action.</param>
+            <param name="predicate">The action to apply to each item.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.IsNullOrEmpty(System.String)">
+            <summary>Checks if the provided value is null or empty.</summary>
+            <param name="value">The value to check.</param>
+            <returns>True if the provided value is null or empty.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Interpolate(System.String,System.Object[])">
+            <summary>Interpolates the provided formatted string with the provided args using the default culture.</summary>
+            <param name="format">The formatted string.</param>
+            <param name="args">The values to use for interpolation.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Extensions.Interpolate(System.String,System.Globalization.CultureInfo,System.Object[])">
+            <summary>Interpolates the provided formatted string with the provided args.</summary>
+            <param name="format">The formatted string.</param>
+            <param name="culture">The culture info to use.</param>
+            <param name="args">The values to use for interpolation.</param>
+        </member>
+        <member name="T:QuantumConcepts.Formats.StereoLithography.Facet">
+            <summary>A representation of a facet which is defined by its location (<see cref="P:QuantumConcepts.Formats.StereoLithography.Facet.Vertices"/>) and directionality (<see cref="P:QuantumConcepts.Formats.StereoLithography.Facet.Normal"/>).</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.Facet.Normal">
+            <summary>Indicates the directionality of the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.Facet.Vertices">
+            <summary>Indicates the location of the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.Facet.AttributeByteCount">
+            <summary>Additional data attached to the facet.</summary>
+            <remarks>Depending on the source of the STL, this could be used to indicate such things as the color of the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>. This functionality only exists in binary STLs.</remarks>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.#ctor">
+            <summary>Creates a new, empty <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.#ctor(QuantumConcepts.Formats.StereoLithography.Normal,System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Vertex},System.UInt16)">
+            <summary>Creates a new <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> using the provided parameters.</summary>
+            <param name="normal">The directionality of the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</param>
+            <param name="vertices">The location of the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</param>
+            <param name="attributeByteCount">Additional data to attach to the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.Write(System.IO.StreamWriter)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> as text to the <paramref name="writer"/>.</summary>
+            <param name="writer">The writer to which the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> will be written at the current position.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.Write(System.IO.BinaryWriter)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> as binary to the <paramref name="writer"/>.</summary>
+            <param name="writer">The writer to which the <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> will be written at the current position.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.ToString">
+            <summary>Returns the string representation of this <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.Equals(QuantumConcepts.Formats.StereoLithography.Facet)">
+            <summary>Determines whether or not this instance is the same as the <paramref name="other"/> instance.</summary>
+            <param name="other">The <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> to which to compare.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.GetEnumerator">
+            <summary>Iterates through the <see cref="P:QuantumConcepts.Formats.StereoLithography.Facet.Vertices"/> collection.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.System#Collections#IEnumerable#GetEnumerator">
+            <summary>Iterates through the <see cref="P:QuantumConcepts.Formats.StereoLithography.Facet.Vertices"/> collection.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.Read(System.IO.StreamReader)">
+            <summary>Reads a single <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> from the <paramref name="reader"/>.</summary>
+            <param name="reader">The reader which contains a <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> to be read at the current position</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Facet.Read(System.IO.BinaryReader)">
+            <summary>Reads a single <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> from the <paramref name="reader"/>.</summary>
+            <param name="reader">The reader which contains a <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/> to be read at the current position</param>
+        </member>
+        <member name="T:QuantumConcepts.Formats.StereoLithography.Normal">
+            <summary>A simple XYZ representation of a normal (<see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/>).</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.#ctor">
+            <summary>Creates a new, empty <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.#ctor(System.Single,System.Single,System.Single)">
+            <summary>Creates a new <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> using the provided coordinates.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.Invert">
+            <summary>Flips the normal so it faces the opposite direction.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.ToString">
+            <summary>Returns the string representation of this <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.Read(System.IO.StreamReader)">
+            <summary>Reads a single <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> from the <paramref name="reader"/>.</summary>
+            <param name="reader">The reader which contains a <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> to be read at the current position</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.Read(System.IO.BinaryReader)">
+            <summary>Reads a single <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> from the <paramref name="reader"/>.</summary>
+            <param name="reader">The reader which contains a <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> to be read at the current position</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Normal.FromVertex(QuantumConcepts.Formats.StereoLithography.Vertex)">
+            <summary>Converts the <paramref name="vertex"/> to a normal.</summary>
+            <remarks>This does nothing more than copy the X, Y and Z coordinates of the <paramref name="vertex"/> into a new <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> instance.</remarks>
+            <param name="vertex">The <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> to be converted into a <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/>.</param>
+            <returns>A <see cref="T:QuantumConcepts.Formats.StereoLithography.Normal"/> or null if the <paramref name="vertex"/> is null.</returns>
+        </member>
+        <member name="T:QuantumConcepts.Formats.StereoLithography.STLDocument">
+            <summary>The outer-most STL object which contains the <see cref="P:QuantumConcepts.Formats.StereoLithography.STLDocument.Facets"/> that make up the model.</summary>
+        </member>
+        <member name="F:QuantumConcepts.Formats.StereoLithography.STLDocument.DefaultBufferSize">
+            <summary>Defines the buffer size to use when reading from a <see cref="T:System.IO.StreamReader"/>.</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.STLDocument.Name">
+            <summary>The name of the solid.</summary>
+            <remarks>This property is not used for binary STLs.</remarks>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.STLDocument.Facets">
+            <summary>The list of <see cref="T:QuantumConcepts.Formats.StereoLithography.Facet"/>s within this solid.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.#ctor">
+            <summary>Creates a new, empty <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.#ctor(System.String,System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Facet})">
+            <summary>Creates a new <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> with the given <paramref name="name"/> and populated with the given <paramref name="facets"/>.</summary>
+            <param name="name">
+                The name of the solid.
+                <remarks>This property is not used for binary STLs.</remarks>
+            </param>
+            <param name="facets">The facets with which to populate this solid.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.WriteText(System.IO.Stream)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> as text to the provided <paramref name="stream"/>.</summary>
+            <param name="stream">The stream to which the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> will be written.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.WriteBinary(System.IO.Stream)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> as binary to the provided <paramref name="stream"/>.</summary>
+            <param name="stream">The stream to which the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> will be written.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.SaveAsText(System.String)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> as text to the provided <paramref name="path"/>.</summary>
+            <param name="path">The absolute path where the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> will be written.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.SaveAsBinary(System.String)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> as binary to the provided <paramref name="path"/>.</summary>
+            <param name="path">The absolute path where the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> will be written.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.AppendFacets(System.Collections.Generic.IEnumerable{QuantumConcepts.Formats.StereoLithography.Facet})">
+            <summary>Appends the provided facets to this instance's <see cref="P:QuantumConcepts.Formats.StereoLithography.STLDocument.Facets"/>.</summary>
+            <remarks>An entire <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> can be passed to this method and all of the facets which it contains will be appended to this instance.</remarks>
+            <param name="facets">The facets to append.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.IsText(System.IO.Stream)">
+            <summary>Determines if the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> contained within the <paramref name="stream"/> is text-based.</summary>
+            <remarks>The <paramref name="stream"/> will be reset to position 0.</remarks>
+            <param name="stream">The stream which contains the STL data.</param>
+            <returns>True if the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> is text-based, otherwise false.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.IsBinary(System.IO.Stream)">
+            <summary>Determines if the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> contained within the <paramref name="stream"/> is binary-based.</summary>
+            <remarks>The <paramref name="stream"/> will be reset to position 0.</remarks>
+            <param name="stream">The stream which contains the STL data.</param>
+            <returns>True if the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> is binary-based, otherwise false.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.Read(System.IO.Stream,System.Boolean)">
+            <summary>Reads the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> contained within the <paramref name="stream"/> into a new <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+            <remarks>This method will determine how to read the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> (whether to read it as text or binary data).</remarks>
+            <param name="stream">The stream which contains the STL data.</param>
+            <param name="tryBinaryIfTextFailed">Set to true to try read as binary if reading as text results in zero facets</param>
+            <returns>An <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> representing the data contained in the stream or null if the stream is empty.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.Read(System.IO.StreamReader)">
+            <summary>Reads the STL document contained within the <paramref name="stream"/> into a new <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+            <remarks>This method expects a text-based STL document to be contained within the <paramref name="reader"/>.</remarks>
+            <param name="reader">The reader which contains the text-based STL data.</param>
+            <returns>An <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> representing the data contained in the stream or null if the stream is empty.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.Read(System.String)">
+            <summary>Reads the STL document contained within the <paramref name="stl"/> parameter into a new <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+            <param name="stl">A string which contains the STL data.</param>
+            <returns>An <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> representing the data contained in the <paramref name="stl"/> parameter or null if the parameter is empty.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.Open(System.String)">
+            <summary>Reads the STL document located at the <paramref name="path"/> into a new <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+            <param name="path">A full path to a file which contains the STL data.</param>
+            <returns>An <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> representing the data contained in the file located at the <paramref name="path"/> specified or null if the parameter is empty.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.Read(System.IO.BinaryReader)">
+            <summary>Reads the STL document contained within the <paramref name="stream"/> into a new <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+            <remarks>This method will expects a binary-based <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> to be contained within the <paramref name="reader"/>.</remarks>
+            <param name="reader">The reader which contains the binary-based STL data.</param>
+            <returns>An <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> representing the data contained in the stream or null if the stream is empty.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.CopyAsText(System.IO.Stream,System.IO.Stream)">
+            <summary>Reads the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> within the <paramref name="inStream"/> as text into the <paramref name="outStream"/>.</summary>
+            <param name="inStream">The stream to read from.</param>
+            <param name="outStream">The stream to read into.</param>
+            <returns>The <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> that was copied.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.CopyAsBinary(System.IO.Stream,System.IO.Stream)">
+            <summary>Reads the <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> within the <paramref name="inStream"/> as binary into the <paramref name="outStream"/>.</summary>
+            <param name="inStream">The stream to read from.</param>
+            <param name="outStream">The stream to read into.</param>
+            <returns>The <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> that was copied.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.ToString">
+            <summary>Returns the header representation of this <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.Equals(QuantumConcepts.Formats.StereoLithography.STLDocument)">
+            <summary>Determines whether or not this instance is the same as the <paramref name="other"/> instance.</summary>
+            <param name="other">The <see cref="T:QuantumConcepts.Formats.StereoLithography.STLDocument"/> to which to compare.</param>
+            <returns>True if this instance is equal to the <paramref name="other"/> instance.</returns>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.GetEnumerator">
+            <summary>Iterates through the <see cref="P:QuantumConcepts.Formats.StereoLithography.STLDocument.Facets"/> collection.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.STLDocument.System#Collections#IEnumerable#GetEnumerator">
+            <summary>Iterates through the <see cref="P:QuantumConcepts.Formats.StereoLithography.STLDocument.Facets"/> collection.</summary>
+        </member>
+        <member name="T:QuantumConcepts.Formats.StereoLithography.Vertex">
+            <summary>A simple XYZ representation of a vertex.</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.Vertex.X">
+            <summary>The X coordinate of this <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/>.</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.Vertex.Y">
+            <summary>The Y coordinate of this <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/>.</summary>
+        </member>
+        <member name="P:QuantumConcepts.Formats.StereoLithography.Vertex.Z">
+            <summary>The Z coordinate of this <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.#ctor">
+            <summary>Creates a new, empty <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.#ctor(System.Single,System.Single,System.Single)">
+            <summary>Creates a new <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> using the provided coordinates.</summary>
+            <param name="x"><see cref="P:QuantumConcepts.Formats.StereoLithography.Vertex.X"/></param>
+            <param name="y"><see cref="P:QuantumConcepts.Formats.StereoLithography.Vertex.Y"/></param>
+            <param name="z"><see cref="P:QuantumConcepts.Formats.StereoLithography.Vertex.Z"/></param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.Shift(QuantumConcepts.Formats.StereoLithography.Vertex)">
+            <summary>Shifts the <paramref name="Vertex"/> by the X, Y and Z values in the <paramref name="shift"/> parameter.</summary>
+            <param name="shift">The amount to shift the vertex.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.Write(System.IO.StreamWriter)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> as text to the <paramref name="writer"/>.</summary>
+            <param name="writer">The writer to which the <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> will be written at the current position.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.Write(System.IO.BinaryWriter)">
+            <summary>Writes the <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> as binary to the <paramref name="writer"/>.</summary>
+            <param name="writer">The writer to which the <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> will be written at the current position.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.ToString">
+            <summary>Returns the string representation of this <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/>.</summary>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.Equals(QuantumConcepts.Formats.StereoLithography.Vertex)">
+            <summary>Determines whether or not this instance is the same as the <paramref name="other"/> instance.</summary>
+            <param name="other">The <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> to which to compare.</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.Read(System.IO.StreamReader)">
+            <summary>Reads a single <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> from the <paramref name="reader"/>.</summary>
+            <param name="reader">The reader which contains a <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> to be read at the current position</param>
+        </member>
+        <member name="M:QuantumConcepts.Formats.StereoLithography.Vertex.Read(System.IO.BinaryReader)">
+            <summary>Reads a single <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> from the <paramref name="reader"/>.</summary>
+            <param name="reader">The reader which contains a <see cref="T:QuantumConcepts.Formats.StereoLithography.Vertex"/> to be read at the current position</param>
+        </member>
+    </members>
+</doc>
