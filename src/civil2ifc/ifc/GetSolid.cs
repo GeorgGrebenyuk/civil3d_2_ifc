@@ -23,7 +23,7 @@ namespace civil2ifc.ifc
 {
     public class GetSolid
     {
-        public IfcPolygonalFaceSet surf_row;
+        public IfcFaceBasedSurfaceModel surf_row;
         //public IfcFaceBasedSurfaceModel surf_row;
         public GetSolid(ObjectId input_solid_id)
         {
@@ -33,67 +33,44 @@ namespace civil2ifc.ifc
                 using (Transaction acTrans = ac_db.TransactionManager.StartTransaction())
                 {
                     Solid3d input_solid = acTrans.GetObject(input_solid_id, OpenMode.ForRead) as Solid3d;
+                    //Temporal containers for external surface definition (faces indexes and Point3d list)
+                    List<List<int>> faces_indexed = new List<List<int>>();
+                    List<Point3d> points_temp = new List<Point3d>();
 
-                    List<Tuple<double, double, double>> points_temp = new List<Tuple<double, double, double>>();
-                    List<IfcIndexedPolygonalFace> faces_indexed = new List<IfcIndexedPolygonalFace>();
-                    List<Point3d> face_points = new List<Point3d>();
-
-                    Brep brp = new Brep(input_solid);
-                    using (brp)
+                    using (Brep brp = new Brep(input_solid))
                     {
-                        for (int complex_counter = 0; complex_counter < brp.Complexes.Count(); complex_counter++)
+                        foreach (Autodesk.AutoCAD.BoundaryRepresentation.Face fce in brp.Faces)
                         {
                             List<int> coord_indexes = new List<int>(); // КУДА ЭТО????
-                            Complex cmp = brp.Complexes.ElementAt(complex_counter);
-                            for (int shell_counter = 0; shell_counter < cmp.Shells.Count(); shell_counter++)
+                            foreach (BoundaryLoop lp in fce.Loops)
                             {
-
-                                Shell shl = cmp.Shells.ElementAt(shell_counter);
-                                for (int face_counter = 0; face_counter < shl.Faces.Count(); face_counter++)
+                                foreach (Edge edg in lp.Edges)
                                 {
-                                    Autodesk.AutoCAD.BoundaryRepresentation.Face fce = shl.Faces.ElementAt(face_counter);
-
-                                    for (int BoundaryLoop_counter = 0; BoundaryLoop_counter < fce.Loops.Count(); BoundaryLoop_counter++)
+                                    vertex_opeations(edg.Vertex1);
+                                    vertex_opeations(edg.Vertex2);
+                                    void vertex_opeations(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v)
                                     {
-
-                                        BoundaryLoop lp = fce.Loops.ElementAt(BoundaryLoop_counter);
-                                        for (int edge_counter = 0; edge_counter < lp.Edges.Count(); edge_counter++)
+                                        if (!points_temp.Contains(v.Point))
                                         {
-                                            Edge edg = lp.Edges.ElementAt(edge_counter);
-                                            vertex_opeations(edg.Vertex1);
-                                            vertex_opeations(edg.Vertex2);
-                                            void vertex_opeations(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v)
-                                            {
-                                                if (!face_points.Contains(v.Point))
-                                                {
-                                                    face_points.Add(v.Point);
-                                                    points_temp.Add(new Tuple<double, double, double>(v.Point.X, v.Point.Y, v.Point.Z));
-                                                    coord_indexes.Add(points_temp.Count() - 1);
-                                                }
-                                                else
-                                                {
-                                                    int point_last = face_points.FindIndex(a => a == v.Point);
-                                                    coord_indexes.Add(point_last);
-                                                }
-                                            }
+                                            points_temp.Add(v.Point);
+                                            coord_indexes.Add(points_temp.Count() - 1);
                                         }
-
-
+                                        else
+                                        {
+                                            int point_last = points_temp.FindIndex(a => a == v.Point);
+                                            coord_indexes.Add(point_last);
+                                        }
                                     }
-
                                 }
-
                             }
-                            faces_indexed.Add(new IfcIndexedPolygonalFace(ifc_db, coord_indexes));
+                            faces_indexed.Add(coord_indexes);
                         }
                     }
-
-                    IfcCartesianPointList3D collection = new IfcCartesianPointList3D(ifc_db, points_temp);
-                    this.surf_row = new IfcPolygonalFaceSet(collection, faces_indexed);
+                    this.surf_row = new ifc.BaseStructures(points_temp, faces_indexed).finish_surface;
                     acTrans.Commit();
                 }
-            }
 
+            }
         }
     }
 }
