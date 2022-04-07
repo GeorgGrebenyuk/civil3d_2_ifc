@@ -14,7 +14,6 @@ using cas = Autodesk.Civil.ApplicationServices;
 using cds = Autodesk.Civil.DatabaseServices;
 using GeometryGym.Ifc;
 using Autodesk.AutoCAD.Runtime;
-using GeometryGym.Ifc;
 using Autodesk.AutoCAD.EditorInput;
 
 namespace civil2ifc
@@ -54,23 +53,22 @@ namespace civil2ifc
             
             ifc_project = new IfcProject(ifc_site, "IfcProject", IfcUnitAssignment.Length.Metre) { };
 
-            //Base placement for position other elements
-            IfcCartesianPoint p0 = new IfcCartesianPoint(ifc_db, 0d, 0d, 0d);
-            IfcDirection d1 = new IfcDirection(ifc_db, 0d, 0d, 1d);
-            IfcDirection d2 = new IfcDirection(ifc_db, 1d, 0d, 0d);
-            IfcAxis2Placement3D p2 = new IfcAxis2Placement3D(p0, d1, d2);
-            base_placement = new IfcLocalPlacement(p2);
-
             //Start parsing file
             //Surfaces
-            //civil_objects.Surface.Create(civil_doc.GetSurfaceIds());
-            civil_objects.PipeNetwork.Create(civil_doc.GetPipeNetworkIds());
-            civil_objects.Solids.Create();
+            new civil_objects.Model_objects(civil_doc.GetSurfaceIds(), "Surfaces");
+            //PipesNetwork
+            new civil_objects.Model_objects(civil_doc.GetPipeNetworkIds(), "PipeNetworks");
+
+            //Solids
+            TypedValue[] search_conditions = new TypedValue[1] { new TypedValue((int)DxfCode.Start, "3DSOLID") };
+            PromptSelectionResult obj_group = Application.DocumentManager.MdiActiveDocument.Editor.SelectAll(new SelectionFilter(search_conditions));
+            if (obj_group.Status == PromptStatus.OK) new civil_objects.Model_objects(new ObjectIdCollection(obj_group.Value.GetObjectIds()), "Solids");
+
+
 
             string path_to_ifc_file = ac_db.Filename.Replace(Path.GetExtension(ac_db.Filename), $"{Guid.NewGuid()}.ifc");
             
             ifc_db.WriteFile(path_to_ifc_file);
-            //ac_db.Save();
         }
 
         private static void SetLayerColorsToMemory()
