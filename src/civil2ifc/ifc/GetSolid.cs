@@ -23,42 +23,71 @@ namespace civil2ifc.ifc
     public class GetSolid
     {
         public IfcFaceBasedSurfaceModel surf_row;
-        public IfcPolygonalFaceSet surf_row2;
+        //public IfcFaceBasedSurfaceModel surf_row;
         public GetSolid(ObjectId input_solid_id)
         {
+
             using (DocumentLock acDocLock = ac_doc.LockDocument())
             {
                 using (Transaction acTrans = ac_db.TransactionManager.StartTransaction())
                 {
                     List<IfcFace> surf_faces = new List<IfcFace>();
 
-                    string solid_path = $@"C:\Users\{Environment.UserName}\AppData\Local\Temp\{Guid.NewGuid()}.stl";
+                    string folder_path = $@"C:\Users\{Environment.UserName}\AppData\Local\Temp\DXFs";
+                    if (!Directory.Exists(folder_path)) Directory.CreateDirectory(folder_path);
+                    string solid_path = $@"{folder_path}\{Guid.NewGuid()}.dxf";
                     Solid3d input_solid = acTrans.GetObject(input_solid_id, OpenMode.ForRead) as Solid3d;
-                    input_solid.StlOut(solid_path, true);
-                    stl.STLDocument solid_stl = stl.STLDocument.Open(solid_path);
-                    List<stl.Facet> stl_facets = solid_stl.Facets.ToList();
-                    foreach (stl.Facet stl_one_facet in stl_facets)
+
+                    using (var db = new Database(false, true))
                     {
-                        surf_faces.Add(new ifc.BaseStructures(stl_one_facet).face);
+                        // read the template dwg file
+                        string tmp_path = @"C:\Users\Georg\AppData\Local\Autodesk\C3D 2022\enu\Template\acadiso.dwt";
+                        db.ReadDwgFile(tmp_path, FileOpenMode.OpenForReadAndAllShare, false, null);
+
+                        // start a transaction
+                        using (var tr = db.TransactionManager.StartTransaction())
+                        {
+                            // check if a layer named "Character" already exists and create it if not
+                            string layerName = "solid";
+                            ObjectId layerId;
+                            var layerTable = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
+                            if (layerTable.Has(layerName))
+                            {
+                                layerId = layerTable[layerName];
+                            }
+                            else
+                            {
+                                tr.GetObject(db.LayerTableId, OpenMode.ForWrite);
+                                var layer = new LayerTableRecord
+                                {
+                                    Name = layerName,
+                                };
+                                layerId = layerTable.Add(layer);
+                                tr.AddNewlyCreatedDBObject(layer, true);
+                            }
+
+                            // get the Model space
+                            var modelSpace = (BlockTableRecord)tr.GetObject(
+                                SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForWrite);
+
+
+                            modelSpace.AppendEntity(input_solid);
+                            tr.AddNewlyCreatedDBObject(input_solid, true);
+
+                            // save changes to the database
+                            tr.Commit();
+                        }
+
+                        // save the new drawing
+                        db.DxfOut(solid_path, 0, DwgVersion.AC1027);
                     }
-                    File.Delete(solid_path);
+
+                    
+                    //File.Delete(solid_path);
                     this.surf_row = new IfcFaceBasedSurfaceModel(new IfcConnectedFaceSet(surf_faces));
                     acTrans.Commit();
                 }
             }
-            //FullSubentityPath path = new FullSubentityPath(new ObjectId[1] { input_solid.Id }, new SubentityId(SubentityType.Null, IntPtr.Zero));
-
-
-
-            //List<Tuple<double, double, double>> points_temp = new List<Tuple<double, double, double>>();
-            //List<IfcIndexedPolygonalFace> faces_indexed = new List<IfcIndexedPolygonalFace>();
-            //List<Point3d> face_points = new List<Point3d>();
-
-
-
-
-            //IfcCartesianPointList3D collection = new IfcCartesianPointList3D(ifc_db, points_temp);
-            //this.surf_row = new IfcPolygonalFaceSet(collection, faces_indexed);
             
         }
     }
