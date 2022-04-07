@@ -9,6 +9,7 @@ Plugin to convert drawing's objects to IFC (with GeometryGym .NET library)
 - IFC2x3;
 ### Civil3d objects
 - Surfaces;
+- PipeNetwork (pipes and structures) in debug-mode (problems with geometry representation)
 ### Internal drawing parameters
 - Property sets;
 
