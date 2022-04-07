@@ -37,36 +37,52 @@ namespace civil2ifc.ifc
                     List<List<int>> faces_indexed = new List<List<int>>();
                     List<Point3d> points_temp = new List<Point3d>();
 
-                    using (Brep brp = new Brep(input_solid))
+                    double length = input_solid.GeometricExtents.MinPoint.GetVectorTo(input_solid.GeometricExtents.MaxPoint).Length;
+
+                    List<IfcFace> surf_faces = new List<IfcFace>();
+                    using (Brep brep = new Brep(input_solid))
                     {
-                        foreach (Autodesk.AutoCAD.BoundaryRepresentation.Face fce in brp.Faces)
+                        using (Mesh2dControl mc = new Mesh2dControl())
                         {
-                            List<int> coord_indexes = new List<int>(); // КУДА ЭТО????
-                            foreach (BoundaryLoop lp in fce.Loops)
+                            //Set mesh control about how to strip the mesh
+                            mc.MaxNodeSpacing = length;
+                            mc.MaxSubdivisions = 1;
+                            using (Mesh2dFilter mf = new Mesh2dFilter())
                             {
-                                foreach (Edge edg in lp.Edges)
+                                mf.Insert(brep, mc);
+                                using (Mesh2d m = new Mesh2d(mf))
                                 {
-                                    vertex_opeations(edg.Vertex1);
-                                    vertex_opeations(edg.Vertex2);
-                                    void vertex_opeations(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v)
+                                    Dictionary<Point3d, IfcCartesianPoint> pts = new Dictionary<Point3d, IfcCartesianPoint>();
+                                    foreach (Element2d e in m.Element2ds)
                                     {
-                                        if (!points_temp.Contains(v.Point))
+                                        foreach (Node n in e.Nodes)
                                         {
-                                            points_temp.Add(v.Point);
-                                            coord_indexes.Add(points_temp.Count() - 1);
+                                            if (pts.ContainsKey(n.Point))
+                                                continue;
+
+                                            //Get each point
+                                            pts.Add(n.Point, new IfcCartesianPoint(ifc_db, n.Point.X, n.Point.Y, n.Point.Z));
+                                            n.Dispose();
                                         }
-                                        else
+                                        e.Dispose();
+                                    }
+
+                                    foreach (Element2d e in m.Element2ds)
+                                    {
+                                        List<IfcCartesianPoint> points_face = new List<IfcCartesianPoint>();
+                                        foreach (Node n in e.Nodes)
                                         {
-                                            int point_last = points_temp.FindIndex(a => a == v.Point);
-                                            coord_indexes.Add(point_last);
+                                            //Group each polygon
+                                            points_face.Add(pts[n.Point]);
                                         }
+                                        IfcFaceOuterBound outerBound = new IfcFaceOuterBound(new IfcPolyLoop(points_face), true);
+                                        surf_faces.Add(new IfcFace(outerBound));
                                     }
                                 }
                             }
-                            faces_indexed.Add(coord_indexes);
                         }
                     }
-                    this.surf_row = new ifc.BaseStructures(points_temp, faces_indexed).finish_surface;
+                    this.surf_row = new IfcFaceBasedSurfaceModel(new IfcConnectedFaceSet(surf_faces));
                     acTrans.Commit();
                 }
 
