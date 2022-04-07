@@ -12,7 +12,7 @@ Plugin to convert drawing's objects to IFC (with GeometryGym .NET library)
 - PipeNetwork (pipes and structures)*
 - 3DSolids (acad objects too)
 
-* - not of all structures are supported (null's structure ... how work with it?)
+\* not of all structures are supported (null's structure ... how work with it?)
 ### Internal drawing parameters
 - Property sets;
 
