@@ -1,4 +1,4 @@
-public IfcPolygonalFaceSet surf_row2;
+public IfcPolygonalFaceSet surf_row;
         //public IfcFaceBasedSurfaceModel surf_row;
         public GetSolid(ObjectId input_solid_id)
         {
@@ -64,7 +64,7 @@ public IfcPolygonalFaceSet surf_row2;
                     }
 
                     IfcCartesianPointList3D collection = new IfcCartesianPointList3D(ifc_db, points_temp);
-                    this.surf_row2 = new IfcPolygonalFaceSet(collection, faces_indexed);
+                    this.surf_row = new IfcPolygonalFaceSet(collection, faces_indexed);
                     acTrans.Commit();
                 }
             }
