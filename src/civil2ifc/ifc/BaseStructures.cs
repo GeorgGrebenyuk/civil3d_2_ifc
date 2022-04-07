@@ -24,6 +24,7 @@ namespace civil2ifc.ifc
             return new IfcCartesianPoint(ifc_db, x, y, z);
         }
         public IfcFace face;
+        public IfcFaceBasedSurfaceModel finish_surface;
         public BaseStructures (cds.TinSurfaceTriangle c3d_triangle)
         {
             IfcCartesianPoint get_by_vertex(cds.TinSurfaceVertex vertex)
@@ -66,6 +67,28 @@ namespace civil2ifc.ifc
             {
 
             }
+        }
+        public BaseStructures (List<Point3d> points, List<List<int>> faces_indexed)
+        {
+            List<IfcCartesianPoint> ifc_points = new List<IfcCartesianPoint>();
+            List<IfcFace> surf_faces = new List<IfcFace>();
+            foreach (Point3d p in points)
+            {
+                ifc_points.Add(new IfcCartesianPoint(ifc_db, p.X, p.Y, p.Z));
+            }
+
+            foreach (List<int> indexes_group in faces_indexed)
+            {
+                List<IfcCartesianPoint> face_points = new List<IfcCartesianPoint>(indexes_group.Count());
+                foreach (int point_index in indexes_group)
+                {
+                    face_points.Add(ifc_points[point_index]);
+                }
+                IfcPolyLoop ifc_loop = new IfcPolyLoop(face_points);
+                IfcFaceOuterBound ifc_bound = new IfcFaceOuterBound(ifc_loop, true);
+                surf_faces.Add( new IfcFace(ifc_bound));
+            }
+            this.finish_surface = new IfcFaceBasedSurfaceModel(new IfcConnectedFaceSet(surf_faces));
         }
 
     }

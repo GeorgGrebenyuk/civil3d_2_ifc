@@ -16,8 +16,8 @@ using GeometryGym.Ifc;
 
 using static civil2ifc.Start;
 using Autodesk.AutoCAD.Geometry;
-using stl = QuantumConcepts.Formats.StereoLithography;
-using dxf = netDxf;
+//using stl = QuantumConcepts.Formats.StereoLithography;
+//using dxf = netDxf;
 
 namespace civil2ifc.ifc
 {
@@ -38,21 +38,24 @@ namespace civil2ifc.ifc
                     List<IfcIndexedPolygonalFace> faces_indexed = new List<IfcIndexedPolygonalFace>();
                     List<Point3d> face_points = new List<Point3d>();
 
-                   
-                    using (Brep brp = new Brep(input_solid))
+                    Brep brp = new Brep(input_solid);
+                    using (brp)
                     {
                         for (int complex_counter = 0; complex_counter < brp.Complexes.Count(); complex_counter++)
-                        {                            
+                        {
+                            List<int> coord_indexes = new List<int>(); // КУДА ЭТО????
                             Complex cmp = brp.Complexes.ElementAt(complex_counter);
                             for (int shell_counter = 0; shell_counter < cmp.Shells.Count(); shell_counter++)
                             {
+
                                 Shell shl = cmp.Shells.ElementAt(shell_counter);
                                 for (int face_counter = 0; face_counter < shl.Faces.Count(); face_counter++)
                                 {
                                     Autodesk.AutoCAD.BoundaryRepresentation.Face fce = shl.Faces.ElementAt(face_counter);
-                                    List<int> coord_indexes = new List<int>(); // КУДА ЭТО????
+
                                     for (int BoundaryLoop_counter = 0; BoundaryLoop_counter < fce.Loops.Count(); BoundaryLoop_counter++)
                                     {
+
                                         BoundaryLoop lp = fce.Loops.ElementAt(BoundaryLoop_counter);
                                         for (int edge_counter = 0; edge_counter < lp.Edges.Count(); edge_counter++)
                                         {
@@ -74,12 +77,17 @@ namespace civil2ifc.ifc
                                                 }
                                             }
                                         }
+
+
                                     }
-                                    faces_indexed.Add(new IfcIndexedPolygonalFace(ifc_db, coord_indexes));
+
                                 }
-                            }                            
+
+                            }
+                            faces_indexed.Add(new IfcIndexedPolygonalFace(ifc_db, coord_indexes));
                         }
                     }
+
                     IfcCartesianPointList3D collection = new IfcCartesianPointList3D(ifc_db, points_temp);
                     this.surf_row = new IfcPolygonalFaceSet(collection, faces_indexed);
                     acTrans.Commit();
