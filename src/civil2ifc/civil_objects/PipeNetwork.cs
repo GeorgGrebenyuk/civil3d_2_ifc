@@ -93,7 +93,7 @@ namespace civil2ifc.civil_objects
             {
                 //Geometry
                 cds.Pipe one_pipe = one_pipe_record.Key;
-                IfcFaceBasedSurfaceModel pipe_solid = new ifc.GetSolid(one_pipe_record.Value).surf_row;
+                var pipe_solid = new ifc.GetSolid(one_pipe_record.Value).surf_row;
 
 
                 //IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_pipe.StartPoint.X,
@@ -120,9 +120,9 @@ namespace civil2ifc.civil_objects
                 {
                     {"Radius",one_pipe.Radius },
                     {"WallThickness",one_pipe.WallThickness },
-                    {"Length3D",one_pipe.Length3D },
-                    {"PartFamilyName",one_pipe.PartFamilyName },
-                    {"PartSizeName",one_pipe.PartSizeName }
+                    //{"Length3D",one_pipe.Length3D },
+                   // {"PartFamilyName",one_pipe.PartFamilyName },
+                    //{"PartSizeName",one_pipe.PartSizeName }
                 };
                 Dictionary<string, Dictionary<string, object>> internal_surf_props = new Dictionary<string, Dictionary<string, object>>();
                 internal_surf_props.Add("Pipes properties", pipes_properties);
@@ -135,7 +135,7 @@ namespace civil2ifc.civil_objects
             {
                 cds.Structure one_structure = one_structure_record.Key;
                 //Geometry
-                IfcFaceBasedSurfaceModel structure_solid = new ifc.GetSolid(one_structure_record.Value).surf_row;
+                var structure_solid = new ifc.GetSolid(one_structure_record.Value).surf_row;
 
                 //IfcCartesianPoint pipe_start = new IfcCartesianPoint(ifc_db, one_structure.StartPoint.X,
                 //    one_structure.StartPoint.Y, one_structure.StartPoint.Z);
@@ -167,8 +167,8 @@ namespace civil2ifc.civil_objects
                     //{"Height",one_structure.Height },
                     //{"InnerDiameterOrWidth",one_structure.InnerDiameterOrWidth },
                     //{"InnerLength ",one_structure.InnerLength },
-                    {"PartFamilyId",one_structure.PartFamilyId },
-                    {"PartFamilyName",one_structure.PartFamilyName},
+                    //{"PartFamilyId",one_structure.PartFamilyId },
+                    //{"PartFamilyName",one_structure.PartFamilyName},
                     //{"PartSizeName",one_structure.PartSizeName },
                     //{"PartSubType",one_structure.PartSubType },
                     //{"PartType",one_structure.PartType },
