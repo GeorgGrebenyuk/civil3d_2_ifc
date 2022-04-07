@@ -24,6 +24,7 @@ namespace civil2ifc.ifc
             return new IfcCartesianPoint(ifc_db, x, y, z);
         }
         public IfcFace face;
+        public List<IfcFace> faces;
         public IfcFaceBasedSurfaceModel finish_surface;
         public BaseStructures (cds.TinSurfaceTriangle c3d_triangle)
         {
@@ -89,6 +90,26 @@ namespace civil2ifc.ifc
                 surf_faces.Add( new IfcFace(ifc_bound));
             }
             this.finish_surface = new IfcFaceBasedSurfaceModel(new IfcConnectedFaceSet(surf_faces));
+        }
+        public BaseStructures(Extents3d e)
+        {
+            this.faces = new List<IfcFace>();
+            IfcCartesianPoint p1 = new IfcCartesianPoint(ifc_db, e.MinPoint.X, e.MinPoint.Y, e.MinPoint.Z);
+            IfcCartesianPoint p2 = new IfcCartesianPoint(ifc_db, e.MaxPoint.X - e.MinPoint.X, e.MinPoint.Y, e.MinPoint.Z);
+            IfcCartesianPoint p3 = new IfcCartesianPoint(ifc_db, e.MinPoint.X, e.MaxPoint.Y - e.MinPoint.Y, e.MinPoint.Z);
+            IfcCartesianPoint p4 = new IfcCartesianPoint(ifc_db, e.MaxPoint.X - e.MinPoint.X, e.MaxPoint.Y - e.MinPoint.Y, e.MinPoint.Z);
+
+            IfcCartesianPoint p5 = new IfcCartesianPoint(ifc_db, e.MinPoint.X, e.MinPoint.Y, e.MaxPoint.Z);
+            IfcCartesianPoint p6 = new IfcCartesianPoint(ifc_db, e.MaxPoint.X - e.MinPoint.X, e.MinPoint.Y, e.MaxPoint.Z);
+            IfcCartesianPoint p7 = new IfcCartesianPoint(ifc_db, e.MinPoint.X, e.MaxPoint.Y - e.MinPoint.Y, e.MaxPoint.Z);
+            IfcCartesianPoint p8 = new IfcCartesianPoint(ifc_db, e.MaxPoint.X - e.MinPoint.X, e.MaxPoint.Y - e.MinPoint.Y, e.MaxPoint.Z);
+
+            this.faces.Add(new IfcFace(new IfcFaceOuterBound(new IfcPolyLoop(new List<IfcCartesianPoint> { p1, p2, p3, p4 }), true)));
+            this.faces.Add(new IfcFace(new IfcFaceOuterBound(new IfcPolyLoop(new List<IfcCartesianPoint> { p1, p3, p5, p7 }), true)));
+            this.faces.Add(new IfcFace(new IfcFaceOuterBound(new IfcPolyLoop(new List<IfcCartesianPoint> { p5, p4, p8, p7 }), true)));
+            this.faces.Add(new IfcFace(new IfcFaceOuterBound(new IfcPolyLoop(new List<IfcCartesianPoint> { p2, p4, p8, p6 }), true)));
+            this.faces.Add(new IfcFace(new IfcFaceOuterBound(new IfcPolyLoop(new List<IfcCartesianPoint> { p1, p5, p6, p2 }), true)));
+            this.faces.Add(new IfcFace(new IfcFaceOuterBound(new IfcPolyLoop(new List<IfcCartesianPoint> { p5, p6, p8, p7 }), true)));
         }
 
     }

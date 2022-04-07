@@ -38,7 +38,8 @@ namespace civil2ifc.civil_objects
                             surf_faces.Add(new ifc.BaseStructures(tr).face);
                         }
                         IfcFaceBasedSurfaceModel ifc_surf_model = new IfcFaceBasedSurfaceModel(new IfcConnectedFaceSet(surf_faces));
-                        IfcStyledItem object_style = new IfcStyledItem(ifc_surf_model, new civil_properties.SetMaterial(tin_surf.Color).style_assignm);
+                        new ifc.AddObject()
+                        IfcStyledItem object_style = new IfcStyledItem(ifc_surf_model, new civil_properties.SetMaterial(tin_surf.LayerId).style_assignm);
                         IfcShapeRepresentation surface_repr = new IfcShapeRepresentation(ifc_surf_model);
 
                         IfcSite new_site = new IfcSite(ifc_site, tin_surf.Name);
