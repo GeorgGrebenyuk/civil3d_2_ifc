@@ -101,7 +101,7 @@ namespace civil2ifc.ifc
             //Temporal containers for external surface definition (faces indexes and Point3d list)
             List<List<int>> faces_indexed = new List<List<int>>();
             List<Point3d> points_temp = new List<Point3d>();
-
+            
             double length = input_solid.GeometricExtents.MinPoint.GetVectorTo(input_solid.GeometricExtents.MaxPoint).Length;
 
             this.faces = new List<IfcFace>();
@@ -152,8 +152,10 @@ namespace civil2ifc.ifc
             }
             catch
             {
-                Extents3d solid_extent = input_solid.GeometricExtents;
-                this.faces = new ifc.BaseStructures(solid_extent).faces;
+                this.faces = null;
+                //Extents3d solid_extent = input_solid.GeometricExtents;
+                //this.faces = new ifc.BaseStructures(solid_extent).faces;
+                
             }
         }
         public BaseStructures (Point3d center, double height)

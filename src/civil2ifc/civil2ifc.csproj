@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="civil_objects\Model_objects.cs" />
+    <Compile Include="civil_objects\Technical.cs" />
     <Compile Include="ifc\AddObject.cs" />
     <Compile Include="ifc\BaseStructures.cs" />
     <Compile Include="ifc\IfcProps.cs" />

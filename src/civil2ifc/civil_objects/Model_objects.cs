@@ -101,21 +101,21 @@ namespace civil2ifc.civil_objects
                         foreach (ObjectId pipe_id in structures_ids)
                         {
                             cds.Structure new_s = acTrans.GetObject(pipe_id, OpenMode.ForRead) as cds.Structure;
-                             
-                            if (!new_s.Description.Contains("улевой колоде"))
+                            
+                            var structure_solid = new ifc.BaseStructures(new_s.Solid3dBody).faces;
+                           
+
+                            if (structure_solid == null)
                             {
-                                var structure_solid = new ifc.BaseStructures(new_s.Solid3dBody).faces;
-                                new ifc.AddObject(structure_solid, pipe_network_system, id, new_s.LayerId);
+                                IfcCartesianPoint p = new IfcCartesianPoint(ifc_db, (new_s.StartPoint.X + new_s.EndPoint.X) / 2d,
+                                        (new_s.StartPoint.Y + new_s.EndPoint.Y) / 2d, (new_s.StartPoint.Z + new_s.EndPoint.Z) / 2d);
+                                new ifc.AddObject(p, pipe_network_system, id, new_s.LayerId);
+                                temp_points_invalid_objects.Add(new_s.StartPoint);
                             }
                             else
                             {
-                                IfcCartesianPoint p = new IfcCartesianPoint(ifc_db, (new_s.StartPoint.X + new_s.EndPoint.X) / 2d,
-                                    (new_s.StartPoint.Y + new_s.EndPoint.Y) / 2d, (new_s.StartPoint.Z + new_s.EndPoint.Z) / 2d);
-                                new ifc.AddObject(p, pipe_network_system, id, new_s.LayerId);
+                                new ifc.AddObject(structure_solid, pipe_network_system, id, new_s.LayerId);
                             }
-                                 
-                             
-                            
 
                         }
                     }

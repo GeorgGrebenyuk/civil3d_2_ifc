@@ -15,6 +15,7 @@ using cds = Autodesk.Civil.DatabaseServices;
 using GeometryGym.Ifc;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
 
 namespace civil2ifc
 {
@@ -31,6 +32,7 @@ namespace civil2ifc
         public static cas.CivilDocument civil_doc;
         public static Database ac_db;
         public static Dictionary<ObjectId, Autodesk.AutoCAD.Colors.Color> layer2color;
+        public static List<Point3d> temp_points_invalid_objects;
 
         private enum civil_obj_type
         {
@@ -52,7 +54,7 @@ namespace civil2ifc
             ifc_site = new IfcSite(ifc_db, "civil_site");
             
             ifc_project = new IfcProject(ifc_site, "IfcProject", IfcUnitAssignment.Length.Metre) { };
-
+            temp_points_invalid_objects = new List<Point3d>();
             //Start parsing file
             //Surfaces
             new civil_objects.Model_objects(civil_doc.GetSurfaceIds(), "Surfaces");
@@ -69,6 +71,7 @@ namespace civil2ifc
             string path_to_ifc_file = ac_db.Filename.Replace(Path.GetExtension(ac_db.Filename), $"{Guid.NewGuid()}.ifc");
             
             ifc_db.WriteFile(path_to_ifc_file);
+            civil_objects.Technical.CreateSpheresInIncorrectPlacesInModelSpace();
         }
 
         private static void SetLayerColorsToMemory()
